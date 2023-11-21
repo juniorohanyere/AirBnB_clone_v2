@@ -22,7 +22,7 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Dictionary of models currently in storage will be returned"""
+        """Dictionary of models currently in here returned"""
         if cls:
             dic = {k: v for k, v in FileStorage.__objects.items()
                    if type(v) == cls}
