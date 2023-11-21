@@ -76,10 +76,12 @@ class FileStorage:
 
     def delete(self, obj=None):
         """Deletion of obj from __objects"""
+        """
         if obj:
             key = obj.to_dict()['__class__'] + '.' + obj.id
             if key in self.all():
                 del self.all()[key]
+        """
         """ deletion of an existing element
         """
         if obj:
