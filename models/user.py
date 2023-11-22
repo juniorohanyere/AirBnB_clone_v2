@@ -1,33 +1,31 @@
 #!/usr/bin/python3
-
 """
-A module that defines the ORM class for User table
+    module containing user class
+    module containing user class
 """
-from os import getenv
-from models.base_model import Base
-from models.base_model import BaseModel
-from sqlalchemy import Column
-from sqlalchemy import String
+from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
+from sqlalchemy import create_engine, Column, Integer, String
+from os import environ
+
+storage_engine = environ.get("HBNB_TYPE_STORAGE")
 
 
 class User(BaseModel, Base):
     """
-    Defines attributes for User table
+        User class for the user
+        User class for the user
     """
-    __tablename__ = 'users'
-
-    if getenv('HBNB_TYPE_STORAGE') == 'db':
+    if (storage_engine == 'db'):
+        __tablename__ = "users"
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
-        places = relationship(
-        'Place', backref='user', cascade='all, delete')
-        reviews = relationship(
-        'Review', backref='user', cascade='all, delete')
+        places = relationship("Place", backref="user")
+        reviews = relationship("Review", backref="user")
     else:
-        email = ''
-        password = ''
-        first_name = ''
-        last_name = ''
+        email = ""
+        password = ""
+        first_name = ""
+        last_name = ""
