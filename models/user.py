@@ -4,10 +4,8 @@
 A module that defines the ORM class for User table
 """
 from os import getenv
-from models.base_model import Base
-from models.base_model import BaseModel
-from sqlalchemy import Column
-from sqlalchemy import String
+from models.base_model import Base, BaseModel
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 
