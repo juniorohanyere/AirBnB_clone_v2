@@ -43,10 +43,10 @@ def do_deploy(archive_path):
         dfile = "/data/web_static/releases/" + filename[:-4]
         filename = "/tmp/" + filename
 
-        put(archive_path, "/tmp")
+        put(archive_path, "/tmp/")
 
         run("sudo mkdir -p {}".format(dfile))
-        run("sudo tar -xzf {} -C {}".format(filename, dfile))
+        run("sudo tar -xzf {} -C {}/".format(filename, dfile))
         run("sudo rm {}".format(filename))
         run("sudo mv {}/web_static/* {}".format(dfile, dfile))
         run("sudo rm -rf {}/web_static".format(dfile))
