@@ -4,8 +4,13 @@ an AirBnB Clone repo, using the function do_pack
 distributes an archive to your web servers, using the function do_deploy
 """
 
-from fabric.api import local
+import os
+from fabric.api import *
 from datetime import datetime
+
+
+env.hosts = ["100.25.13.234", "54.196.44.164"]
+env.user = "ubuntu"
 
 
 def do_pack():
