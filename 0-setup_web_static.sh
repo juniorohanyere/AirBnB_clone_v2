@@ -20,7 +20,7 @@ echo '<html>
   <body>
     Holberton School
   </body>
-</html>' | tee /data/web_static/releases/test/index.html > /dev/null
+</html>' | sudo tee /data/web_static/releases/test/index.html > /dev/null
 
 # create a fake HTML file /data/web_static/releases/test/index.html
 sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
@@ -28,12 +28,12 @@ sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
 # create a symbolic link /data/web_static/current linked to the...
 # .../data/web_static/releases/test/ folder. If the symbolic link already...
 # ...exists, it should be deleted and recreated every time the script is ran.
-sudo chown -hR ubuntu:ubuntu /data/
+sudo chown -R ubuntu:ubuntu /data/
 
 # give ownership of the /data/ folder to the ubuntu user AND group (you can
 # assume this user and group exist). This should be recursive; everything
 # inside should be created/owned by this user/group.
-sudo sed -i '51 i \\n\tlocation /hbnb_static {\n\talias /data/web_static/current;\n\t}' /etc/nginx/sites-available/default
+sudo sed -i '53i \\tlocation \/hbnb_static {\n\t\t alias /data/web_static/current;\n\t}' /etc/nginx/sites-available/default
 
 # update the Nginx configuration to serve the content of
 # /data/web_static/current/ to hbnb_static
