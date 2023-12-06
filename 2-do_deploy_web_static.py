@@ -1,47 +1,56 @@
 #!/usr/bin/python3
-""" a Fabric script (based on the file 1-pack_web_static.py) that distributes..
-    ..an archive to your web servers, using the function do_deploy: """
+"""generates a .tgz archive from the contents of the web_static folder of
+an AirBnB Clone repo, using the function do_pack
+distributes an archive to your web servers, using the function do_deploy
+"""
 
-
-from fabric.api import *
+from fabric.api import local
 from datetime import datetime
-from os.path import exists
 
 
-env.hosts = ['100.25.28.249', '54.237.210.237']  # <IP web-01>, <IP web-02>
-# ^ All remote commands must be executed on your both web servers
-# (using env.hosts = ['<IP web-01>', 'IP web-02'] variable in your script)
+def do_pack():
+    """Return:
+        returns the archive path if the archive has been correctly generated
+        return None otherwise
+    """
+
+    local("sudo mkdir -p versions")
+    date = datetime.now().strftime("%Y%m%d%H%M%S")
+    filename = "versions/web_static_{}.tgz".format(date)
+    result = local("sudo tar -cvzf {} web_static".format(filename))
+
+    return filename if result.succeeded else None
 
 
 def do_deploy(archive_path):
-    """ distributes an archive to my web servers
+    """distribute an archive to a web server
+
+    Args:
+        archive_path (str): the full path of the archive to distribute
+
+    Return:
+        return True on success
+        return False otherwise
     """
-    if exists(archive_path) is False:
-        return False  # Returns False if the file at archive_path doesnt exist
-    filename = archive_path.split('/')[-1]
-    # so now filename is <web_static_2023041409349.tgz>
-    no_tgz = '/data/web_static/releases/' + "{}".format(filename.split('.')[0])
-    # curr = '/data/web_static/current'
-    tmp = "/tmp/" + filename
 
-    try:
-        put(archive_path, "/tmp/")
-        # ^ Upload the archive to the /tmp/ directory of the web server
-        run("mkdir -p {}/".format(no_tgz))
-        # Uncompress the archive to the folder /data/web_static/releases/
-        # <archive filename without extension> on the web server
-        run("tar -xzf {} -C {}/".format(tmp, no_tgz))
-        run("rm {}".format(tmp))
-        run("mv {}/web_static/* {}/".format(no_tgz, no_tgz))
-        run("rm -rf {}/web_static".format(no_tgz))
-        # ^ Delete the archive from the web server
-        run("rm -rf /data/web_static/current")
-        # Delete the symbolic link /data/web_static/current from the web server
-        run("ln -s {}/ /data/web_static/current".format(no_tgz))
-        # Create a new the symbolic link /data/web_static/current on the
-        # web server, linked to the new version of your code
-        # (/data/web_static/releases/<archive filename without extension>)
+    if os.path.exists(archive_path):
+        filename = archive_path[9:]
+        dfile = "/data/web_static/releases/" + filename[:-4]
+        filename = "/tmp/" + filename
+
+        put(archive_path, "/tmp")
+
+        run("sudo mkdir -p {}".format(dfile))
+        run("sudo tar -xzf {} -C {}".format(filename, dfile))
+        run("sudo rm {}".format(filename))
+        run("sudo mv {}/web_static/* {}".format(dfile, dfile))
+        run("sudo rm -rf {}/web_static".format(dfile))
+        run("sudo rm -rf /data/web_static/current")
+        run("sudo ln -s {} /data/web_static/current".format(dfile))
+
+        print("New version deployed!")
+
         return True
-    except:
-        return False
 
+    else:
+        return False
