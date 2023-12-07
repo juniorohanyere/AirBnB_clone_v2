@@ -68,4 +68,4 @@ def deploy():
 
     archive_path = do_pack()
 
-    return do_deploy(archive_path) if os.path.exits(archive_path) else False
+    return do_deploy(archive_path) if os.path.exists(archive_path) else False
